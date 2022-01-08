@@ -13,7 +13,7 @@ class LoginScreen extends StatelessWidget {
             emailField(bloc),
             passwordField(bloc),
             Container(margin: EdgeInsets.only(top: 25.0),),
-            submitButton()
+            submitButton(bloc)
           ],
         )
     );
@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
           decoration: InputDecoration(
             hintText: 'E-mail Address',
             labelText: 'E-mail Address',
-            errorText: snapshot.error.toString()
+            errorText: snapshot.error != null ? snapshot.error.toString() : null
           ),
         );
       },
@@ -51,20 +51,23 @@ class LoginScreen extends StatelessWidget {
             decoration: InputDecoration(
               hintText: 'Password',
               labelText: 'Password',
-              errorText: snapshot.error.toString()
+              errorText: snapshot.error != null ? snapshot.error.toString() : null
             )
         );
       },
     );
   }
 
-  Widget submitButton() {
-    return RaisedButton(
-      child: Text('Login'),
-      color: Colors.blue,
-        onPressed: () {
-          print('hi from another side');
-        }
+  Widget submitButton(Bloc bloc) {
+    return StreamBuilder(
+      stream: bloc.submitValid,
+      builder: (context, snapshot) {
+        return RaisedButton(
+            child: Text('Login'),
+            color: Colors.blue,
+            onPressed: snapshot.hasData ? bloc.submit : null,
+        );
+      },
     );
   }
 }
